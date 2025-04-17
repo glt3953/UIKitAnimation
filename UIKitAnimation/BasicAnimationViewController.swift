@@ -375,13 +375,25 @@ class BasicAnimationViewController: UIViewController {
     @objc private func textLabelTapped() {
         textEnlarged.toggle()
         
-        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0.2, options: []) {
-            if self.textEnlarged {
-                self.textLabel.font = .systemFont(ofSize: 30, weight: .bold)
+        // 第一段动画：0-180°旋转
+        UIView.animate(withDuration: 0.3, delay: 0, options: [], animations: {
+            // 旋转到180°
+            self.textLabel.transform = CGAffineTransform(rotationAngle: CGFloat.pi)
+        }) { _ in
+            // 第二段动画：180-360°旋转
+            UIView.animate(withDuration: 0.3, delay: 0, options: [], animations: {
+                // 旋转到360°
                 self.textLabel.transform = CGAffineTransform(rotationAngle: CGFloat.pi * 2)
-            } else {
-                self.textLabel.font = .systemFont(ofSize: 16, weight: .bold)
-                self.textLabel.transform = .identity
+            }) { _ in
+                // 两段旋转完成后，执行字体大小变化
+                UIView.animate(withDuration: 0.3) {
+                    if self.textEnlarged {
+                        self.textLabel.font = .systemFont(ofSize: 30, weight: .bold)
+                    } else {
+                        self.textLabel.font = .systemFont(ofSize: 16, weight: .bold)
+                        self.textLabel.transform = .identity
+                    }
+                }
             }
         }
     }
